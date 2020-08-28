@@ -31,10 +31,6 @@ type Server struct {
 	shutdownChan chan bool
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello world233333!!!!"))
-}
-
 func ListenAndServe(addr string, handler http.Handler) error {
 	return NewServer(addr, handler, DEFAULT_READ_TIMEOUT, DEFAULT_WRITE_TIMEOUT).ListenAndServe()
 }
@@ -110,6 +106,7 @@ func (srv *Server) Serve() error {
 	err := srv.Server.Serve(srv.listener)
 
 	srv.logf("waiting for connections closed.")
+	//阻塞等待关闭
 	<-srv.shutdownChan
 	srv.logf("all connections closed.")
 

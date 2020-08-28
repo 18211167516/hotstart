@@ -8,6 +8,10 @@ import (
 	Hot "github.com/18211167516/hotstart"
 )
 
+func handler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("hello world233333!!!!"))
+}
+
 func main() {
 	http.HandleFunc("/hello", handler)
 	pid := os.Getpid()

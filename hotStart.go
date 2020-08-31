@@ -1,4 +1,4 @@
-package hotstart
+package main
 
 import (
 	"context"
@@ -35,6 +35,32 @@ type HotServer struct {
 	BeforeBegin  func(addr string)
 }
 
+func hello(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(20 * time.Second)
+	w.Write([]byte("hello world233333!!!!"))
+}
+
+func test(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("test 22222"))
+}
+
+func main() {
+	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/test", test)
+	pid := os.Getpid()
+	address := ":9999"
+	s := &http.Server{
+		Addr:    address,
+		Handler: nil,
+	}
+	err := ListenAndServer(s)
+	log.Printf("process with pid %d stoped, error: %s.\n", pid, err)
+}
+
+func ListenAndServer(server *http.Server) error {
+	return NewHotServer(server).ListenAndServe()
+}
+
 func ListenAndServe(addr string, handler http.Handler) error {
 	return NewServer(addr, handler, DEFAULT_READ_TIMEOUT, DEFAULT_WRITE_TIMEOUT).ListenAndServe()
 }
@@ -42,20 +68,14 @@ func ListenAndServe(addr string, handler http.Handler) error {
 /*
 new HotServer
 */
-func NewServer(addr string, handler http.Handler, readTimeout, writeTimeout time.Duration) (srv *HotServer) {
+func NewHotServer(server *http.Server) (srv *HotServer) {
 	runMutex.Lock()
 	defer runMutex.Unlock()
 
 	isChild := os.Getenv("HOT_CONTINUE") != ""
 
 	srv = &HotServer{
-		Server: &http.Server{
-			Addr:         addr,
-			Handler:      handler,
-			ReadTimeout:  readTimeout,
-			WriteTimeout: writeTimeout,
-		},
-
+		Server:       server,
 		isChild:      isChild,
 		signalChan:   make(chan os.Signal),
 		shutdownChan: make(chan bool),
@@ -67,6 +87,21 @@ func NewServer(addr string, handler http.Handler, readTimeout, writeTimeout time
 	}
 
 	return
+}
+
+/*
+new HotServer
+*/
+func NewServer(addr string, handler http.Handler, readTimeout, writeTimeout time.Duration) *HotServer {
+
+	Server := &http.Server{
+		Addr:         addr,
+		Handler:      handler,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+	}
+
+	return NewHotServer(Server)
 }
 
 /*

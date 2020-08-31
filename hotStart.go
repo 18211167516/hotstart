@@ -148,6 +148,8 @@ func (srv *HotServer) Serve() error {
 	//阻塞等待关闭
 	<-srv.shutdownChan
 	srv.logf("all connections closed.")
+
+	return err
 }
 
 /*

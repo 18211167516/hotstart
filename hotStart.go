@@ -141,7 +141,6 @@ func (srv *HotServer) ListenAndServeTLS(certFile, keyFile string) error {
 func (srv *HotServer) Serve() error {
 	//监听信号
 	go srv.handleSignals()
-
 	err := srv.Server.Serve(srv.listener)
 
 	srv.logf("waiting for connections closed.")

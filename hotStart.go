@@ -256,7 +256,7 @@ func (srv *HotServer) fork() error {
 func (srv *HotServer) getTCPListenerFile() (*os.File, error) {
 	file, err := srv.listener.(*net.TCPListener).File()
 	if err != nil {
-		return 0, err
+		return file, err
 	}
 	return file, nil
 }

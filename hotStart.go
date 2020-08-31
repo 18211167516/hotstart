@@ -1,4 +1,4 @@
-package hotstart
+package main
 
 import (
 	"context"
@@ -33,6 +33,17 @@ type HotServer struct {
 	signalChan   chan os.Signal
 	shutdownChan chan bool
 	BeforeBegin  func(addr string)
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("hello world233333!!!!"))
+}
+
+func main() {
+	http.HandleFunc("/hello", handler)
+	pid := os.Getpid()
+	address := ":9999"
+	err := ListenAndServe(address, nil)
 }
 
 func ListenAndServe(addr string, handler http.Handler) error {

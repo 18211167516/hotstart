@@ -46,9 +46,9 @@ func NewServer(addr string, handler http.Handler, readTimeout, writeTimeout time
 	runMutex.Lock()
 	defer runMutex.Unlock()
 
-	isChild = os.Getenv("HOT_CONTINUE") != ""
+	isChild := os.Getenv("HOT_CONTINUE") != ""
 
-	srv = Server{
+	srv = &HotServer{
 		Server: &http.Server{
 			Addr:         addr,
 			Handler:      handler,
@@ -98,7 +98,7 @@ func (srv *HotServer) ListenAndServe() error {
 /*
 监听 https server
 */
-func (srv *Server) ListenAndServeTLS(certFile, keyFile string) error {
+func (srv *HotServer) ListenAndServeTLS(certFile, keyFile string) error {
 	addr := srv.Addr
 	if addr == "" {
 		addr = ":https"
@@ -138,7 +138,7 @@ func (srv *Server) ListenAndServeTLS(certFile, keyFile string) error {
 /*
 服务启动
 */
-func (srv *Server) Serve() error {
+func (srv *HotServer) Serve() error {
 	//监听信号
 	go srv.handleSignals()
 	err := srv.Server.Serve(srv.listener)
@@ -154,7 +154,7 @@ func (srv *Server) Serve() error {
 /*
 get lister
 */
-func (srv *Server) getNetListener(addr string) (ln net.Listener, err error) {
+func (srv *HotServer) getNetListener(addr string) (ln net.Listener, err error) {
 	if srv.isChild {
 		file := os.NewFile(LISTENER_FD, "")
 		ln, err = net.FileListener(file)
@@ -176,7 +176,7 @@ func (srv *Server) getNetListener(addr string) (ln net.Listener, err error) {
 监听信号
 */
 
-func (srv *Server) handleSignals() {
+func (srv *HotServer) handleSignals() {
 	var sig os.Signal
 
 	signal.Notify(
@@ -204,7 +204,7 @@ func (srv *Server) handleSignals() {
 /*
 优雅关闭后台
 */
-func (srv *Server) shutdown() {
+func (srv *HotServer) shutdown() {
 	if err := srv.Shutdown(context.Background()); err != nil {
 		srv.logf("HTTP server shutdown error: %v", err)
 	} else {
@@ -214,7 +214,7 @@ func (srv *Server) shutdown() {
 }
 
 // start new process to handle HTTP Connection
-func (srv *Server) fork() error {
+func (srv *HotServer) fork() error {
 	listener, err := srv.getTCPListenerFile()
 	if err != nil {
 		return fmt.Errorf("failed to get socket file descriptor: %v", err)
@@ -242,7 +242,7 @@ func (srv *Server) fork() error {
 /*
 获取TCP监听文件
 */
-func (srv *Server) getTCPListenerFile() (*os.File, error) {
+func (srv *HotServer) getTCPListenerFile() (*os.File, error) {
 	file, err := srv.listener.(*net.TCPListener).File()
 	if err != nil {
 		return 0, err
@@ -254,7 +254,7 @@ func (srv *Server) getTCPListenerFile() (*os.File, error) {
 格式化输出Log
 */
 
-func (srv *Server) logf(format string, args ...interface{}) {
+func (srv *HotServer) logf(format string, args ...interface{}) {
 	pids := strconv.Itoa(os.Getpid())
 	format = "[pid " + pids + "] " + format
 	log.Printf(format, args...)

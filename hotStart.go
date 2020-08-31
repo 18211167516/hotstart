@@ -144,6 +144,7 @@ func (srv *HotServer) Serve() error {
 
 	go func() {
 		if err := srv.Server.Serve(srv.listener); err != nil {
+			return err
 			srv.logf("waiting for connections closed.")
 		}
 	}()
@@ -151,8 +152,6 @@ func (srv *HotServer) Serve() error {
 	//阻塞等待关闭
 	<-srv.shutdownChan
 	srv.logf("all connections closed.")
-
-	return err
 }
 
 /*

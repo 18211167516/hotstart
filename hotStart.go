@@ -1,4 +1,4 @@
-package Hotstart
+package hotstart
 
 import (
 	"context"

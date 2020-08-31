@@ -216,6 +216,7 @@ func (srv *HotServer) handleSignals() {
 
 	signal.Notify(
 		srv.signalChan,
+		syscall.SIGINT,
 		syscall.SIGTERM,
 		syscall.SIGUSR2,
 	)
@@ -223,7 +224,7 @@ func (srv *HotServer) handleSignals() {
 	for {
 		sig = <-srv.signalChan
 		switch sig {
-		case syscall.SIGTERM:
+		case syscall.SIGTERM, syscall.SIGINT:
 			srv.logf("received SIGTERM, hotstart shutting down HTTP server.")
 			srv.shutdown()
 		case syscall.SIGUSR2:

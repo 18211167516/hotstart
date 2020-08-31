@@ -9,13 +9,18 @@ import (
 	Hot "github.com/18211167516/hotstart"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func hello(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(20 * time.Second)
 	w.Write([]byte("hello world233333!!!!"))
 }
 
+func test(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("test"))
+}
+
 func main() {
-	http.HandleFunc("/hello", handler)
+	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/test", test)
 	pid := os.Getpid()
 	address := ":9999"
 	err := Hot.ListenAndServe(address, nil)

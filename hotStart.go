@@ -243,7 +243,7 @@ func (srv *HotServer) fork() error {
 		Files: []uintptr{os.Stdin.Fd(), os.Stdout.Fd(), os.Stderr.Fd(), listener.Fd()},
 	}
 
-	fork, err := syscall.ForkExec(os.Args[0], os.Args, execSpec)
+	_, err := syscall.ForkExec(os.Args[0], os.Args, execSpec)
 	if err != nil {
 		return fmt.Errorf("Restart: Failed to launch, error: %v", err)
 	}

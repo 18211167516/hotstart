@@ -4,11 +4,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	Hot "github.com/18211167516/hotstart"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(20 * time.Second)
 	w.Write([]byte("hello world233333!!!!"))
 }
 

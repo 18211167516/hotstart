@@ -44,6 +44,7 @@ func main() {
 	pid := os.Getpid()
 	address := ":9999"
 	err := ListenAndServe(address, nil)
+	log.Printf("process with pid %d stoped, error: %s.\n", pid, err)
 }
 
 func ListenAndServe(addr string, handler http.Handler) error {

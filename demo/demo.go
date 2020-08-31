@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 
@@ -16,4 +17,5 @@ func main() {
 	pid := os.Getpid()
 	address := ":9999"
 	err := Hot.ListenAndServe(address, nil)
+	log.Printf("process with pid %d stoped, error: %s.\n", pid, err)
 }

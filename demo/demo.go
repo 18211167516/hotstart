@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	Hot "github.com/18211167516/hotstart"
 )
 
 func hello(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +21,10 @@ func main() {
 	http.HandleFunc("/test", test)
 	pid := os.Getpid()
 	address := ":9999"
-	err := Hot.ListenAndServe(address, nil)
+	s := &http.Server{
+		Addr:    address,
+		Handler: nil,
+	}
+	err := ListenAndServer(s)
 	log.Printf("process with pid %d stoped, error: %s.\n", pid, err)
 }

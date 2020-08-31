@@ -226,7 +226,7 @@ func (srv *HotServer) shutdown() {
 }
 
 // start new process to handle HTTP Connection
-func (srv *HotServer) fork() error {
+func (srv *HotServer) fork() (err error) {
 	listener, err := srv.getTCPListenerFile()
 	if err != nil {
 		return fmt.Errorf("failed to get socket file descriptor: %v", err)
@@ -248,7 +248,7 @@ func (srv *HotServer) fork() error {
 		return fmt.Errorf("Restart: Failed to launch, error: %v", err)
 	}
 
-	return nil
+	return
 }
 
 /*

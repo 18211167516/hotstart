@@ -1,3 +1,4 @@
+
 # HotStart
 
 [![godoc](https://camo.githubusercontent.com/a613b85cc4087229d2655adedfcd8fb2580dc56a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f726f796c6565303730342f67726f6e3f7374617475732e737667)](https://godoc.org/github.com/18211167516/hotstart)
@@ -36,10 +37,10 @@ func main() {
 	http.HandleFunc("/test", test)
 	pid := os.Getpid()
 	address := ":9999"
-	s := &http.Server{
-		Addr:    address,
-		Handler: nil,
-	}
+	s := Hot.NewServer(address, nil)
+	s.ReadHeaderTimeout = 10 * time.Millisecond
+	s.WriteTimeout = 10 * time.Second
+	s.MaxHeaderBytes = 1 << 20
 	err := Hot.ListenAndServer(s)
 	log.Printf("process with pid %d stoped, error: %s.\n", pid, err)
 }

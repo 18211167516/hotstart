@@ -40,7 +40,7 @@ func ListenAndServer(server *http.Server) error {
 }
 
 func ListenAndServe(addr string, handler http.Handler) error {
-	return NewServer(addr, handler, DEFAULT_READ_TIMEOUT, DEFAULT_WRITE_TIMEOUT).ListenAndServe()
+	return NewServer(addr, handler).ListenAndServe()
 }
 
 /*
@@ -70,13 +70,11 @@ func NewHotServer(server *http.Server) (srv *HotServer) {
 /*
 new HotServer
 */
-func NewServer(addr string, handler http.Handler, readTimeout, writeTimeout time.Duration) *HotServer {
+func NewServer(addr string, handler http.Handler) *HotServer {
 
 	Server := &http.Server{
-		Addr:         addr,
-		Handler:      handler,
-		ReadTimeout:  readTimeout,
-		WriteTimeout: writeTimeout,
+		Addr:    addr,
+		Handler: handler,
 	}
 
 	return NewHotServer(Server)

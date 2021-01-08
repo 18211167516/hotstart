@@ -202,10 +202,10 @@ func (srv *HotServer) handleSignals() {
 		switch sig {
 		case syscall.SIGTERM, syscall.SIGINT:
 			srv.logf("received SIGTERM, hotstart shutting down HTTP server.")
-			srv.shutdown()
+			srv.Shutdown()
 		case syscall.SIGUSR2:
 			srv.logf("received SIGUSR2, hotstart restarting HTTP server.")
-			if err := srv.fork(); err != nil {
+			if err := srv.Restart(); err != nil {
 				log.Println("Fork err:", err)
 			}
 		default:
@@ -216,7 +216,7 @@ func (srv *HotServer) handleSignals() {
 /*
 优雅关闭后台
 */
-func (srv *HotServer) shutdown() {
+func (srv *HotServer) Shutdown() {
 	if err := srv.Shutdown(context.Background()); err != nil {
 		srv.logf("HTTP server shutdown error: %v", err)
 	} else {
@@ -226,7 +226,7 @@ func (srv *HotServer) shutdown() {
 }
 
 // start new process to handle HTTP Connection
-func (srv *HotServer) fork() (err error) {
+func (srv *HotServer) Restart() (err error) {
 	listener, err := srv.getTCPListenerFile()
 	if err != nil {
 		return fmt.Errorf("failed to get socket file descriptor: %v", err)

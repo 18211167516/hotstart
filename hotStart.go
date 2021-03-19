@@ -217,7 +217,7 @@ func (srv *HotServer) handleSignals() {
 优雅关闭后台
 */
 func (srv *HotServer) Shutdown() {
-	if err := srv.Shutdown(context.Background()); err != nil {
+	if err := srv.Server.Shutdown(context.Background()); err != nil {
 		srv.logf("HTTP server shutdown error: %v", err)
 	} else {
 		srv.logf("HTTP server shutdown success.")
